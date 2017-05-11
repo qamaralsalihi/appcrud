@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href='/stylesheets/style.css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <% include ../includes/scripts.ejs %>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <br>
+    
+<div class="container">
+<form class="form-horizontal" role="form">
+  <div class="form-group">
+  	<label class="control-label col-xs-offset-2 col-sm-2" for="name">Name</label>
+    <div class="col-xs-4" ><input type="name" class="form-control" align="center" id="name" placeholder="Robot" ></div>
+  </div>
+  <br>
+  
+   <div class="form-group">
+   <label class="control-label col-xs-offset-2 col-sm-2" for="description">Description</label>
+    <div class="col-xs-4"><textarea class="form-control" id="description" placeholder="Abilities"></textarea></div>
+  </div>
+  <br>
+  
+  <div class="form-group">
+    <label class="control-label col-xs-offset-2 col-sm-2" for="in-stock">Units in-stock</label>
+    <div class="col-xs-4"><input type="in-stock"
+    class="form-control" id="in-stock" placeholder="0"></div>
+  </div>
+</form>
+      </div>
+      <br>
+       
+      <div align="center" class ="new-edit-buttons">
+      <button col text-center id="submit" type="submit" class="btn  btn-primary">Submit</button>
+      <a href="/robots/"class="btn btn-info btn-sm">Back</a>
+      </div>
+      
+      <hr style="margin-top:2em;">
+      <% include ../includes/footer %>
+   
+    <script type="text/javascript">
+    var inputName = document.getElementById("name")
+    var inputDescription = document.getElementById("description")
+    var inputQuantityInStock = document.getElementById("in-stock")
+    var submitButton = document.getElementById("submit")
+    submitButton.addEventListener("click", submitForm, false)
+        
+    function submitForm(event) {
+      event.preventDefault()
+      var requestUrl = "https://southernct-443-robots-api.herokuapp.com/api/robots"
+      var formData = {name: inputName.value, description: inputDescription.value, in_stock: inputQuantityInStock.value}
+      console.log("POSTING", formData, "TO", requestUrl)
+      var requestOptions = {
+        method: "POST",
+        headers: {'Accept':'application/json', 'Content-Type':'application/json'},
+        body: JSON.stringify(formData)
+      }
+      
+      fetch(requestUrl, requestOptions).then(function(response) {
+        if (response.ok) {
+          response.json().then(function(json){
+            window.location = '/robots'
+          })
+        } else {
+          alert("Error. Please enter the Robots info.")
+        }
+      })
+    }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <link rel="stylesheet" href='/stylesheets/style.css'>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <% include ../includes/scripts.ejs %>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+
+
+    <div class="table-inverse">
+       <table class="table table-inverse table-bordered table-hover">
+
+         <thead>
+           <tr>
+             <th class="text-center" >Name</th>
+             <th class="text-center" >Description</th>
+             <th class="text-center" >Stock</th>
+
+             <th class="text-center" ><a href="/robots/new" class="btn btn-success btn-sm" >
+          <span class="glyphicon glyphicon-plus"></span> Add Robot</a></th>
+          
+           </tr>
+         </thead>
+
+         <tbody>
+           <tr>
+             <td><%= robot.name %></td>
+             <td><%= robot.description %></td>
+             <td><%= robot.in_stock %></td>
+             
+             <td>
+                <a href="/robots/<%= robot._id %>/edit"><button class="btn btn-warning btn-sm">
+                <span class="glyphicon glyphicon-pencil"></span> Edit</button>
+              
+               <button id="delete-robot" class="btn btn-danger btn-sm">
+               <span class="glyphicon glyphicon-trash"></span> Delete</button>
+                 </a>
+             </td>
+            
+           </tr>        
+         </tbody>
+       </table>
+            <a href="/robots"><button class="btn btn-info btn-sm">Back</button> 
+        </a>
+     </div>
+     
+      <hr style="margin-top:2em;">
+      <% include ../includes/footer %>
+    
+    <script type="text/javascript">
+      var deleteButton = document.getElementById("delete-robot")
+      deleteButton.addEventListener("click", deleteRobot, false)
+      function deleteRobot() {
+        const requestUrl = "<%= requestUrl %>"
+        const requestOptions = {
+          method: "DELETE",
+          headers: {'Accept':'application/json', 'Content-Type':'application/json'}
+        }
+        fetch(requestUrl, requestOptions).then(function(response) {
+          if (response.ok) {
+            window.location = '/robots'
+          } else {
+            alert("Delete Error.")
+          }
+        }).catch(function(err){
+          alert("Server Error. Try again shortly")
+        })
+      }
+    </script>
+  </body>
+</html>
