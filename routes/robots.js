@@ -1,74 +1,33 @@
-var express = require('express')
-var router = express.Router()
-var fetch = require('node-fetch')
+var express = require('express');
+var router = express.Router();
 
-var baseUrl
-if (true == false) {
-  baseUrl = "http://localhost:3003"
-} else {
-  baseUrl = "https://southernct-443-robots-api.herokuapp.com"
-}
+var myRobots = [
+  {"_id":"123abc", "name":"r2d2", "description":"holds a secret message", "in_stock":100},
+  {"_id":"456def", "name":"bb8", "description":"rolls around", "in_stock":75},
+  {"_id":"789xyz", "name":"c3po", "description":"specializes in language translation", "in_stock":50}
+] // static hard-coded data (for example)
 
-/* LIST */
+/* List Robots */
 
 router.get('/robots', function(req, res, next) {
-  const endpointUrl = `${baseUrl}/api/robots`
-
-  fetch(endpointUrl).then(function(response) {
-    response.json().then(function(json){
-      console.log("LISTING ROBOTS", json.length)
-      res.render('robots/index', {robots: json, title: "Robots List"});
-    })
-  })
+  console.log("LISTING ROBOTS", myRobots)
+  res.render('robots/index', {robots: myRobots, title: "All Robots"});
 });
 
-/* NEW */
-
-router.get('/robots/new', function(req, res, next) {
-  const endpointUrl = `${baseUrl}/api/robots`
-
-  res.render('robots/new', {
-    title: "New Robot",
-    formAction: endpointUrl,
-    formMethod: "POST"
-  })
-})
-
-/* SHOW */
+/* Show Robot */
 
 router.get('/robots/:id', function(req, res, next) {
-  const robotId = req.params.id
-  const endpointUrl = `${baseUrl}/api/robots/${robotId}`
+  var robotId = req.params.id;
+  var robot = myRobots.find(function(robot){ return robot._id == robotId })
 
-  fetch(endpointUrl).then(function(response) {
-    response.json().then(function(json){
-      console.log("SHOWING ROBOT", json)
-      res.render('robots/show', {
-        robot: json,
-        title: `Robot ${robotId}`,
-        requestUrl: endpointUrl
-      })
-    })
-  })
-})
+  if (robot) {
+    console.log("SHOWING ROBOT", robot)
+    res.render('robots/show', {robot: robot, title: `Robot ${robotId}`});
+  } else {
+    var errorMessage = `OOPS - COULDN'T FIND ROBOT ${robotId}`
+    console.log(errorMessage)
+    res.send(errorMessage)
+  }
+});
 
-/* EDIT */
-
-router.get('/robots/:id/edit', function(req, res, next) {
-  const robotId = req.params.id
-  const endpointUrl = `${baseUrl}/api/robots/${robotId}`
-
-  fetch(endpointUrl).then(function(response) {
-    response.json().then(function(json){
-      console.log("POPULATING FORM WITH ROBOT", json)
-      res.render('robots/edit', {
-        robot: json,
-        title: `Edit Robot ${robotId}`,
-        requestUrl: endpointUrl,
-        requestMethod: "PUT"
-      })
-    })
-  })
-})
-
-module.exports = router
+module.exports = router;
